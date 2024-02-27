@@ -20,7 +20,7 @@ app.get("/", async (req, res) => {
     return res.json({ message: "Note not found" });
   }
 
-  return res.json(notes);
+  return res.json(notes.map((note) => ({ ...note, id: note._id })));
 });
 
 app.get("/:user", async (request, response) => {
@@ -39,7 +39,7 @@ app.get("/:user", async (request, response) => {
     return response.json({ error: "Note not found." });
   }
 
-  return response.json(notes);
+  return response.json(notes.map((note) => ({ ...note, id: note._id })));
 });
 
 app.get("/:user/:id", async (request, response) => {
@@ -58,7 +58,7 @@ app.get("/:user/:id", async (request, response) => {
     return response.json({ error: "Note not found." });
   }
 
-  return response.json(notes[0]);
+  return response.json(notes.map((note) => ({ ...note, id: note._id }))[0]);
 });
 
 app.post("/:user", async (request, response) => {
