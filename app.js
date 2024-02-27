@@ -89,11 +89,19 @@ app.post("/:user", async (request, response) => {
 });
 
 /* vegan delete route */
-app.delete("/:tofu", async (request, response) => {
+app.delete("/:user/:tofu", async (request, response) => {
   await connect();
-  /* const  tofu  = request.params.tofu; */
-  const { tofu } = request.params;
-  const { acknowledged, deletedCount } = await Note.deleteOne({ _id: tofu });
+  const { user, tofu } = request.params;
+
+  const { _id: userId } = (await User.findOne({ name: user })) || { _id: null };
+
+  if (!userId) {
+    return res.json({ message: "That user doesn't exist." });
+  }
+
+  const { acknowledged, deletedCount } = (await Note.deleteOne({
+    _id: tofu,
+  })) || { acknowledged: null, deletedCount: null };
 
   if (!acknowledged || !deletedCount) {
     return response.json({ error: "Note not found." });
