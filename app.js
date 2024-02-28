@@ -71,14 +71,18 @@ app.post("/:user", async (request, response) => {
     let { _id: userId } = (await User.findOne({ name: user })) || { _id: null };
 
     if (!userId) {
-      const { _id: newUserId } = await User.create({ name: user });
+      const { _id: newUserId } = (await User.create({ name: user })) || {
+        _id: null,
+      };
       userId = newUserId;
     }
 
     const { content } = request.body;
 
     if (userId && content) {
-      const { _id } = await Note.create({ content, user: userId });
+      const { _id } = (await Note.create({ content, user: userId })) || {
+        _id: null,
+      };
       response.json({ id: _id, message: "Successfully created note." });
     } else {
       response.json({
